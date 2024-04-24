@@ -1,34 +1,35 @@
 import { useState } from "react";
-import { Card, Modal, notification } from "antd";
+import { Card, Modal, Pagination, notification } from "antd";
 import { Container } from "modules";
 import { useHooks, usePost } from "hooks";
 import { Button } from "components";
-import Update from "./update";
 import Create from "./create";
+import More from "./more";
 import { Delete, Edit, CreateDoc } from "assets/images/icons";
 
-const Category = () => {
+import './style.scss'
+
+const Analysis = () => {
   const { get, queryClient, t } = useHooks();
   const { Meta } = Card;
-  const [editModal, showEditModal] = useState(false);
-  const [createModal, showCreateModal] = useState(false);
-  const [selectedCard, setSelectedCard] = useState({});
-  const [successed, setSuccess] = useState<boolean>(false);
-  const [modal, setModal] = useState<{
+  const [createModal, showCreateModal] = useState({
+    open: false,
+    data: {}
+  });
+  const [moreAnalysis, showMoreAnalysis] = useState<{
     isOpen: boolean;
-    data: null;
+    data: object;
   }>({
     isOpen: false,
-    data: null,
+    data: {}
   });
+  const [page, setPage] = useState();
+
   const { mutate } = usePost();
-  const onEdit = (item: object) => {
-    showEditModal(true);
-    setSelectedCard(item);
-  };
+
   const onDeleteHandler = (id: string) => {
     Modal.confirm({
-      title: t("Вы действительно хотите удалить category?"),
+      title: t("Вы действительно хотите удалить Analysis?"),
       okText: t("да"),
       okType: "danger",
       cancelText: t("нет"),
@@ -39,11 +40,11 @@ const Category = () => {
   const deleteAction = (id: string) => {
     if (id) {
       mutate(
-        { method: "delete", url: `/categories/${id}`, data: null },
+        { method: "delete", url: `/analysis/${id}`, data: null },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({
-              queryKey: [`categories`],
+              queryKey: [`analysis`],
             });
             notification["success"]({
               message: t("Успешно удалена"),
@@ -64,39 +65,37 @@ const Category = () => {
   return (
     <div className="flex">
       <Modal
-        open={createModal}
-        onOk={() => showCreateModal(true)}
-        onCancel={() => showCreateModal(false)}
+        open={get(createModal, "open")}
+        onOk={() => showCreateModal({ open: true, data: {} })}
+        onCancel={() => showCreateModal({ open: false, data: {} })}
         footer={null}
         centered
-        title={t("Create category")}
-        width={500}
+        width={700}
         destroyOnClose
       >
-        <Create {...{ showCreateModal, setSuccess, successed }} />
+        <Create {...{ showCreateModal, createModal }} />
       </Modal>
       <Modal
-        open={editModal}
-        onOk={() => showEditModal(true)}
-        onCancel={() => showEditModal(false)}
+        open={moreAnalysis.isOpen}
+        onCancel={() => showMoreAnalysis({ isOpen: false, data: {} })}
         footer={null}
         centered
-        title={t("Edit category")}
+        title={t("Analysis in detail")}
         width={500}
         destroyOnClose
       >
-        <Update {...{ showEditModal, selectedCard }} />
+        <More {...{ moreAnalysis }} />
       </Modal>
       <div>
-        <Container.All name="categories" url="/categories">
-          {({ items }) => {
+        <Container.All name="analysis" url="/analysis" params={{ limit: 8, page }}>
+          {({ items, meta }) => {
             return (
               <div>
                 <Button
-                  title={t("Create category")}
+                  title={t("Create analysis")}
                   icon={<CreateDoc />}
                   size="large"
-                  onClick={() => showCreateModal(true)}
+                  onClick={() => showCreateModal({ open: true, data: {} })}
                 />
                 <div className="grid grid-cols-4 gap-4 mt-[30px]">
                   {items.map((card) => {
@@ -106,29 +105,36 @@ const Category = () => {
                           <Card
                             hoverable
                             style={{ width: 260, marginRight: 15 }}
-                            cover={
-                              <img alt="alt" className="h-48 w-96 object-cover" src={get(card, "images[0].medium")} />
-                            }
+                            onClick={() => showMoreAnalysis({ isOpen: true, data: card })}
                           >
                             <Meta
                               className="pb-[60px]"
                               title={
                                 <div className="">
-                                  <p>{t("Category nomi")} - {(get(card, "categoryName", ""))}</p>
+                                  <p>{t("name")} - {(get(card, "name", ""))}</p>
                                 </div>
                               }
+                            description={
+                              <div className="">
+                                <p>{t("number")} - {(get(card, "number", ""))}</p>
+                              </div>
+                            }
                             />
                             <div className="btnPanel">
                               <div
                                 className="editBtn"
-                                onClick={() => onEdit(card)}
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  showCreateModal({ open: true, data: card })
+                                }}
                               >
                                 <Edit />
                               </div>
                               <div
-                                onClick={() =>
+                                onClick={(e) => {
+                                  e.stopPropagation()
                                   onDeleteHandler(get(card, "_id", ""))
-                                }
+                                }}
                                 className="deleteBtn"
                               >
                                 <Delete />
@@ -140,6 +146,23 @@ const Category = () => {
                     );
                   })}
                 </div>
+                {meta && meta.perPage && (
+                  <div className="mt-[20px] flex justify-end">
+                    <Pagination
+                      current={meta.currentPage}
+                      pageSize={meta.perPage}
+                      total={(meta.totalCount)}
+                      onChange={(page: any) => {
+                        setPage(page)
+                        window.scrollTo({
+                          behavior: "smooth",
+                          top: 0,
+                          left: 0
+                        })
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             );
           }}
@@ -149,4 +172,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Analysis;

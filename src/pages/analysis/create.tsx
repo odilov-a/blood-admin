@@ -1,52 +1,50 @@
-import { Spin } from "antd";
+import { useState } from "react";
 import { Field } from "formik";
-import { Fields, Button } from "components";
+
 import { Container } from "modules";
 import { useHooks } from "hooks";
+import { Fields, Button } from "components";
 
-const Category = ({
-  showCreateModal,
-  setSuccess,
-}: any): JSX.Element => {
-  const { t } = useHooks();
+const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
+  const { t, get } = useHooks();
+  let data = createModal.data && createModal?.data
+
   return (
     <div>
       <Container.Form
-        url="/categories"
-        method="post"
-        name="categories"
+        url={get(data, "_id") ? `analysis/${get(data, "_id")}` : "analysis"}
+        method={get(data, "_id") ? "put" : "post"}
+        name="analysis"
         configs={{
           headers: { "Content-Type": "multipart/form-data" },
         }}
         fields={[
           {
-            name: "categoryNameUz",
+            name: "name",
             type: "string",
             required: true,
+            value: get(data, "name")
           },
           {
-            name: "categoryNameRu",
+            name: "number",
+            type: "number",
+            required: true,
+            value: get(data, "number")
+          },
+          {
+            name: "analysisType",
             type: "string",
             required: true,
+            value: get(data, "analysisType")
           },
           {
-            name: "categoryNameEn",
-            type: "string",
+            name: "file",
             required: true,
-          },
-          {
-            name: "categoryNameKr",
-            type: "string",
-            required: true,
-          },
-          {
-            name: "images",
-            required: true,
+            value: get(data, "file")
           },
         ]}
         onSuccess={(data, resetForm, query) => {
-          query.invalidateQueries({ queryKey: ["categories"] });
-          setSuccess((prev: any) => !prev);
+          query.invalidateQueries({ queryKey: ["analysis"] });
           resetForm();
           showCreateModal(false);
         }}
@@ -54,55 +52,49 @@ const Category = ({
           console.log("Error", error);
         }}
       >
-        {({ isSubmitting, setFieldValue }) => {
+        {({ isSubmitting, setFieldValue, errors, values }) => {
           return (
-            <Spin spinning={isSubmitting} tip="Verifying">
-              <Field
-                rootClassName="mb-[30px] w-full"
-                component={Fields.Input}
-                name="categoryNameUz"
-                type="text"
-                placeholder={t("Categoyira nomi o'zbekcha")}
-                size="large"
-              />
-              <Field
-                rootClassName="mb-[30px] w-full"
-                component={Fields.Input}
-                name="categoryNameRu"
-                type="text"
-                placeholder={t("Categoyira nomi ruscha")}
-                size="large"
-              />
-              <Field
-                rootClassName="mb-[30px] w-full"
-                component={Fields.Input}
-                name="categoryNameEn"
-                type="text"
-                placeholder={t("Categoyira nomi inglizcha")}
-                size="large"
-              />
-              <Field
-                rootClassName="mb-[30px] w-full"
-                component={Fields.Input}
-                name="categoryNameKr"
-                type="text"
-                placeholder={t("Categoyira nomi xitoycha")}
-                size="large"
-              />
-              <Field
-                component={Fields.FileUpload}
-                setFieldValue={setFieldValue}
-                rootClassName="mb-[30px]"
-                name="images"
-                accept="image/png, image/jpeg, image/jpg"
-              />
-              <Button
-                title={t("Saqlash")}
-                className="w-full mt-[20px]"
-                htmlType="submit"
-                size="large"
-              />
-            </Spin>
+            <div>
+              <div className="w-full mt-[30px]">
+                <div>
+                  <Field
+                    component={Fields.Input}
+                    name="name"
+                    size="large"
+                    type="string"
+                    placeholder={t("name")}
+                  />
+                  <Field
+                    component={Fields.Input}
+                    name="number"
+                    type="number"
+                    placeholder={t("number")}
+                    size="large"
+                  />
+                  <Field
+                    component={Fields.Input}
+                    name="analysisType"
+                    type="analysisType"
+                    placeholder={t("analysisType")}
+                    size="large"
+                  />
+                  <Field
+                    component={Fields.FileUpload}
+                    setFieldValue={setFieldValue}
+                    rootClassName="mb-[40px]"
+                    name="file"
+                    type="file"
+                  />
+                  <div className="flex justify-end mt-[20px]">
+                    <Button
+                      title={t("Save")}
+                      size="large"
+                      htmlType="submit"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           );
         }}
       </Container.Form>
@@ -110,4 +102,4 @@ const Category = ({
   );
 };
 
-export default Category;
+export default Analysis;
