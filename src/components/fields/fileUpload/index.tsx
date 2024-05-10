@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
+import { useRef, useState } from "react";
+import { UploadOutlined } from "@ant-design/icons";
 import { Modal, Upload } from "antd";
 import { GetProp, UploadFile, UploadProps, message } from "antd";
 import { FieldProps } from "formik";
@@ -59,7 +59,7 @@ const App = (props: Props) => {
     uid: get(values, "_id",),
     name: get(values, "productTitle"),
     status: 'done',
-    url: get(values, name,  'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'),
+    url: get(values, name, 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'),
   }] : []);
 
   const handleCancel = () => setPreviewOpen(false);
@@ -81,9 +81,9 @@ const App = (props: Props) => {
   };
 
   const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined style={isDark ? { color: "#9EA3B5" } : { color: "#000" }} />
-      <div className="mt-[8px] dark:text-[#9EA3B5]">Upload</div>
+    <button style={{ border: 0, background: "none", }} className="flex items-center" type="button">
+      <UploadOutlined style={isDark ? { color: "#9EA3B5" } : { color: "#000" }} />
+      <div className="dark:text-[#9EA3B5] ml-[10px]">Upload</div>
     </button>
   );
 

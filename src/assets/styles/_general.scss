@@ -151,3 +151,26 @@ ul {
     background-color: #ffa39e;
   }
 }
+
+.ant-upload-select {
+  width: 100px !important;
+  height: 40px !important;
+}
+
+.ant-upload-wrapper {
+  width: 100px !important;
+}
+
+.ant-upload-list-item-container {
+  width: 100px !important;
+  height: 40px !important;
+}
+
+.ant-upload-list-item-file {
+  display: none !important;
+}
+
+.ant-upload-list-item-name {
+  bottom: 9px !important;
+}
+

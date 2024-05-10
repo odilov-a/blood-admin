@@ -18,14 +18,14 @@ import { AxiosRequestConfig } from "axios";
 type TFields = {
   name: string;
   type?:
-    | "object"
-    | "array"
-    | "number"
-    | "string"
-    | "boolean"
-    | "date"
-    | "email"
-    | undefined;
+  | "object"
+  | "array"
+  | "number"
+  | "string"
+  | "boolean"
+  | "date"
+  | "email"
+  | undefined;
   value?: any;
   required?: boolean;
   disabled?: boolean | string;
@@ -39,7 +39,7 @@ interface IFormContent {
   url: string;
   method: IMethod;
   name?: string;
-  configs?:  AxiosRequestConfig<any> | undefined
+  configs?: AxiosRequestConfig<any> | undefined
   params?: TParams | undefined;
   children: (
     data: FormikState<any> &
@@ -62,8 +62,8 @@ const FormContent: FC<IFormContent> = ({
   url,
   method,
   name,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
   children,
   fields,
   params,
@@ -80,12 +80,12 @@ const FormContent: FC<IFormContent> = ({
         initialValues={
           isArray(fields)
             ? fields.reduce(
-                (prev, curr) => ({
-                  ...prev,
-                  [curr.name]: curr.value ? curr.value : "",
-                }),
-                {}
-              )
+              (prev, curr) => ({
+                ...prev,
+                [curr.name]: curr.value ? curr.value : "",
+              }),
+              {}
+            )
             : {}
         }
         enableReinitialize={true}
@@ -130,9 +130,9 @@ const FormContent: FC<IFormContent> = ({
                 validationField = Yup.string();
             }
 
-            // if (field.required) {
-            //   validationField = validationField.required("Требуется ввод");
-            // }
+            if (field.required) {
+              validationField = validationField.required("Требуется ввод");
+            }
 
             // if (field.min) {
             //   validationField = validationField.min(

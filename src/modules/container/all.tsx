@@ -42,10 +42,10 @@ const All: FC<IContainer> = ({
   const newData: { items: object[] | []; meta: TMeta } = {
     items: get(data, `data.${dataKey}`, []),
     meta: {
-      currentPage: get(data, "data.page", 1),
-      pageCount: get(data, "data.last_page", 1),
-      perPage: get(data, "data.per_page", 1),
-      totalCount: get(data, "data.all_data", 1),
+      currentPage: get(data, "data._meta.currentPage", 1),
+      pageCount: get(data, "data._meta.pageCount", 1),
+      perPage: get(data, "data._meta.perPage", 1),
+      totalCount: get(data, "data._meta.totalCount", 1),
     },
   };
   return children({

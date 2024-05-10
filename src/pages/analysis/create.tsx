@@ -1,13 +1,17 @@
-import { useState } from "react";
-import { Field } from "formik";
 
-import { Container } from "modules";
 import { useHooks } from "hooks";
-import { Fields, Button } from "components";
+import Container from "modules/container";
+import Form from "./form";
 
 const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
   const { t, get } = useHooks();
   let data = createModal.data && createModal?.data
+
+  function gen4() {
+    return Math.random()
+      .toString(16)
+      .slice(-4);
+  }
 
   return (
     <div>
@@ -32,17 +36,31 @@ const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
             value: get(data, "number")
           },
           {
-            name: "analysisType",
-            type: "string",
-            required: true,
-            value: get(data, "analysisType")
-          },
-          {
-            name: "file",
-            required: true,
-            value: get(data, "file")
-          },
+            name: "analysis", type: "array", value: [{
+              analys_id: null,
+              uid: gen4(),
+              file: null
+            }],
+            onSubmitValue: (value, values) => (
+              value.map((item: any, idx: any) => ({
+                analys_id: item.analys_id,
+                file: item.file
+              }))
+            )
+          }
         ]}
+        // onSubmitValue: (value, values) => (
+        //   value.reduce((prev: any, curr: any) => {
+        //     console.log({analys_id: get(curr, '[0].analys_id')},{prev}, {curr});
+
+        //     prev.push({
+        //       analys_id: get(curr, 'analys_id'),
+        //       file: get(curr, 'file')
+        //     })
+        //     return prev
+        //   }, [])
+        // )
+
         onSuccess={(data, resetForm, query) => {
           query.invalidateQueries({ queryKey: ["analysis"] });
           resetForm();
@@ -54,47 +72,7 @@ const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
       >
         {({ isSubmitting, setFieldValue, errors, values }) => {
           return (
-            <div>
-              <div className="w-full mt-[30px]">
-                <div>
-                  <Field
-                    component={Fields.Input}
-                    name="name"
-                    size="large"
-                    type="string"
-                    placeholder={t("name")}
-                  />
-                  <Field
-                    component={Fields.Input}
-                    name="number"
-                    type="number"
-                    placeholder={t("number")}
-                    size="large"
-                  />
-                  <Field
-                    component={Fields.Input}
-                    name="analysisType"
-                    type="analysisType"
-                    placeholder={t("analysisType")}
-                    size="large"
-                  />
-                  <Field
-                    component={Fields.FileUpload}
-                    setFieldValue={setFieldValue}
-                    rootClassName="mb-[40px]"
-                    name="file"
-                    type="file"
-                  />
-                  <div className="flex justify-end mt-[20px]">
-                    <Button
-                      title={t("Save")}
-                      size="large"
-                      htmlType="submit"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Form {...{ setFieldValue, values }} />
           );
         }}
       </Container.Form>
