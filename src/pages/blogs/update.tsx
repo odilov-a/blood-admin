@@ -4,30 +4,38 @@ import { Container } from "modules";
 import { Button, Spin } from "antd";
 import { useHooks } from "hooks";
 
-const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
+const Blog = ({ showEditModal, selectedCard }: any): JSX.Element => {
   const { get, t } = useHooks();
   return (
-    <div>
+    <div className="">
       <Container.Form
-        url={`/users/${get(selectedCard, "_id")}`}
+        className="w-[100%]"
+        url={`/blogs/${get(selectedCard, "_id")}`}
+        name="blogs"
         method="put"
-        name="users"
+        configs={{
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }}
         fields={[
           {
-            name: "username",
+            name: "title",
             type: "string",
-            value: get(selectedCard, "username"),
+            value: get(selectedCard, "title"),
             required: true,
           },
           {
-            name: "password",
+            name: "description",
             type: "string",
-            value: get(selectedCard, "password"),
+            value: get(selectedCard, "description"),
+            required: true,
+          },
+          {
+            name: "image",
             required: true,
           },
         ]}
         onSuccess={(data, resetForm, query) => {
-          query.invalidateQueries({ queryKey: ["users"] });
+          query.invalidateQueries({ queryKey: ["blogs"] });
           showEditModal(false)
         }}
         onError={(error) => {
@@ -38,25 +46,29 @@ const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
           return (
             <Spin spinning={isSubmitting} tip="Verifying">
               <Field
-                rootClassName="mb-[40px] w-[300px]"
                 component={Fields.Input}
-                name="username"
+                className="mb-5 w-[100%]"
+                name="title"
                 type="text"
-                placeholder={t("username")}
-                label={t("username")}
+                placeholder={t("Blog nomi")}
                 size="large"
               />
               <Field
-                rootClassName="mb-[40px] w-[300px]"
+                className="mb-5 w-[100%]"
                 component={Fields.Input}
-                name="password"
+                name="description"
                 type="text"
-                placeholder={t("password")}
-                label={t("password")}
+                placeholder={t("To'liq blog")}
                 size="large"
               />
+              <Field
+                component={Fields.FileUpload}
+                setFieldValue={setFieldValue}
+                className="mb-5"
+                name="image"
+              />
               <Button
-                className="w-full h-auto py-[10px] px-4 bg-[#2196F3] text-white font-bold hover:!text-white"
+                className="w-full border-0 h-auto py-[10px] px-4 bg-[#2196F3] text-white font-bold hover:!text-white"
                 htmlType="submit"
               >
                 {t("Saqlash")}
@@ -69,4 +81,4 @@ const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
   );
 };
 
-export default User;
+export default Blog;

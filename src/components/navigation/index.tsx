@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Menu } from "antd";
-import { ExperimentOutlined } from "@ant-design/icons";
+import { ExperimentOutlined, FormOutlined, UserAddOutlined, ApartmentOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import {
   Translation,
@@ -45,6 +45,24 @@ const Navigation: React.FC = () => {
       label: "Analizlar",
       icon: <ExperimentOutlined />,
       route: "/analysis",
+    },
+    {
+      key: "blogs",
+      label: "Bloglar",
+      icon: <FormOutlined />,
+      route: "/blogs",
+    },
+    {
+      key: "clients",
+      label: "Mijozlar",
+      icon: <UserAddOutlined />,
+      route: "/clients",
+    },
+    {
+      key: "filials",
+      label: "Filiallar",
+      icon: <ApartmentOutlined />,
+      route: "/filials",
     },
     {
       key: "translations",

@@ -53,7 +53,6 @@ const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
             )
           }
         ]}
-
         onSuccess={(data, resetForm, query) => {
           query.invalidateQueries({ queryKey: ["analysis"] });
           resetForm();

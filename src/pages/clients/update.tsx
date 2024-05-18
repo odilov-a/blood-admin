@@ -4,30 +4,31 @@ import { Container } from "modules";
 import { Button, Spin } from "antd";
 import { useHooks } from "hooks";
 
-const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
+const Client = ({ showEditModal, selectedCard }: any): JSX.Element => {
   const { get, t } = useHooks();
   return (
-    <div>
+    <div className="">
       <Container.Form
-        url={`/users/${get(selectedCard, "_id")}`}
+        className="w-[100%]"
+        url={`/clients/${get(selectedCard, "_id")}`}
+        name="clients"
         method="put"
-        name="users"
         fields={[
           {
-            name: "username",
+            name: "fullName",
             type: "string",
-            value: get(selectedCard, "username"),
+            value: get(selectedCard, "fullName"),
             required: true,
           },
           {
-            name: "password",
+            name: "phoneNumber",
             type: "string",
-            value: get(selectedCard, "password"),
+            value: get(selectedCard, "phoneNumber"),
             required: true,
           },
         ]}
         onSuccess={(data, resetForm, query) => {
-          query.invalidateQueries({ queryKey: ["users"] });
+          query.invalidateQueries({ queryKey: ["clients"] });
           showEditModal(false)
         }}
         onError={(error) => {
@@ -38,25 +39,23 @@ const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
           return (
             <Spin spinning={isSubmitting} tip="Verifying">
               <Field
-                rootClassName="mb-[40px] w-[300px]"
                 component={Fields.Input}
-                name="username"
+                className="mb-5 w-[100%]"
+                name="fullName"
                 type="text"
-                placeholder={t("username")}
-                label={t("username")}
+                placeholder={t("fullName")}
                 size="large"
               />
               <Field
-                rootClassName="mb-[40px] w-[300px]"
+                className="mb-5 w-[100%]"
                 component={Fields.Input}
-                name="password"
+                name="phoneNumber"
                 type="text"
-                placeholder={t("password")}
-                label={t("password")}
+                placeholder={t("phoneNumber")}
                 size="large"
               />
               <Button
-                className="w-full h-auto py-[10px] px-4 bg-[#2196F3] text-white font-bold hover:!text-white"
+                className="w-full border-0 h-auto py-[10px] px-4 bg-[#2196F3] text-white font-bold hover:!text-white"
                 htmlType="submit"
               >
                 {t("Saqlash")}
@@ -69,4 +68,4 @@ const User = ({ showEditModal, selectedCard }: any): JSX.Element => {
   );
 };
 
-export default User;
+export default Client;

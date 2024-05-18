@@ -15,7 +15,7 @@ const Login = () => {
         method="post"
         fields={[
           {
-            name: "login",
+            name: "username",
             type: "string",
             required: true,
           },
@@ -50,8 +50,8 @@ const Login = () => {
                 </p>
                 <FastField
                   component={Fields.Input}
-                  placeholder={t("Login")}
-                  name="login"
+                  placeholder={t("username")}
+                  name="username"
                   setFieldTouched={setFieldTouched}
                   rootClassName="mb-7"
                   isLoginPage={true}

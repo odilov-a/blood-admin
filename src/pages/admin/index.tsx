@@ -57,7 +57,7 @@ const User = () => {
                               className="pb-[60px]"
                               title={
                                 <div className="">
-                                  <p>{t("Admin nomi")} - {(get(card, "login", ""))}</p>
+                                  <p>{t("Admin nomi")} - {(get(card, "username", ""))}</p>
                                   <p>{t("Admin paroli")} - {(get(card, "password", ""))}</p>
                                 </div>
                               }
