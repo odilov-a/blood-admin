@@ -4,9 +4,8 @@ import Container from "modules/container";
 import Form from "./form";
 
 const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
-  const { t, get } = useHooks();
+  const { get } = useHooks();
   let data = createModal.data && createModal?.data
-
   function gen4() {
     return Math.random()
       .toString(16)
@@ -36,11 +35,16 @@ const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
             value: get(data, "number")
           },
           {
-            name: "analysis", type: "array", value: [{
+            name: "file",
+            type: "array",
+            value: !get(data, "_id") ? [{
               analys_id: null,
               uid: gen4(),
               file: null
-            }],
+            }] : get(data, "analysis").map((item: any, idx: any) => ({
+              analys_id: item.analys_id,
+              file: item.file
+            })),
             onSubmitValue: (value, values) => (
               value.map((item: any, idx: any) => ({
                 analys_id: item.analys_id,
@@ -49,17 +53,6 @@ const Analysis = ({ showCreateModal, createModal }: any): JSX.Element => {
             )
           }
         ]}
-        // onSubmitValue: (value, values) => (
-        //   value.reduce((prev: any, curr: any) => {
-        //     console.log({analys_id: get(curr, '[0].analys_id')},{prev}, {curr});
-
-        //     prev.push({
-        //       analys_id: get(curr, 'analys_id'),
-        //       file: get(curr, 'file')
-        //     })
-        //     return prev
-        //   }, [])
-        // )
 
         onSuccess={(data, resetForm, query) => {
           query.invalidateQueries({ queryKey: ["analysis"] });

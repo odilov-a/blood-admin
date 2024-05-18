@@ -1,23 +1,20 @@
-import { Field } from "formik";
+import { Field, FieldArray } from "formik";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { Fields, Button } from "components";
 import { useHooks } from "hooks";
 import { gen4 } from "services/helpers";
 
-const Form = ({ setFieldValue, values }: any) => {
-  const { t, get } = useHooks();
+const Form = ({ setFieldValue, values }: { setFieldValue: Function, values: any }) => {
+  const { t } = useHooks();
 
-  const removeMultiBox = (uid: any) => {
-    const newArray = values.analysis.filter((f: any) => f.uid !== uid);
-    setFieldValue("analysis", newArray)
-  }
+  const removeMultiBox = (uid: string) => {
+    const newArray = values.file.filter((f: { uid: string }) => f.uid !== uid);
+    setFieldValue("file", newArray);
+  };
 
   const addMultiBox = () => {
-    setFieldValue("analysis", [...values.analysis, {
-      analys_id: null,
-      uid: gen4()
-    }]);
-  }
+    setFieldValue("file", [...values.file, { analys_id: null, uid: gen4() }]);
+  };
 
   return (
     <div className="w-full mt-[30px]">
@@ -39,56 +36,58 @@ const Form = ({ setFieldValue, values }: any) => {
           rootClassName="mb-[20px]"
         />
         <div className="mb-[24px]">
-          {get(values, "analysis", []).map((item: any, index: number) => {
-            return (
-              <div className="flex justify-between">
-                <div className="flex">
-                  <Field
-                    component={Fields.AntAsyncSelect}
-                    url="categories"
-                    name={`analysis[${index}].analys_id`}
-                    placeholder={t("Analiz turini tanlang")}
-                    isClearable
-                    className="mb-[20px] w-[250px] mr-[20px]"
-                    optionLabel="name"
-                    optionValue="_id"
-                    isSearchable
-                    loadOptionsParams={(search: any) => {
-                      return {
-                        extra: { name: search },
-                      }
-                    }}
-                  />
-                  <Field
-                    component={Fields.FileUpload}
-                    setFieldValue={setFieldValue}
-                    name={`analysis[${index}].file`}
-                    className="w-[100px]"
-                  />
-                </div>
-                <div className="flex">
-                  {get(values, "analysis", []).length > 1 && (
-                    <button
-                      type="button"
-                      className="w-[30px] h-[40px]"
-                      onClick={() => removeMultiBox(item.uid)}
-                    >
-                      <MinusCircleOutlined style={{ color: "red" }} />
-                    </button>
-                  )}
-                  {(get(values, "analysis", []).length - 1) === index && (
-                    <button
-                      type="button"
-                      className="w-[30px] h-[40px]"
-                      onClick={() => addMultiBox()}
-                    >
-                      <PlusCircleOutlined style={{ color: "#40a9ff" }} />
-                    </button>
-                  )}
-                </div>
-              </div>
-            )
-          })}
+          <FieldArray name="file">
+            {(arrayHelpers: any) => (
+              <>
+                {values.file.map((item: any, index: number) => (
+                  <div key={item.uid} className="flex justify-between">
+                    <div className="flex items-center">
+                      <Field
+                        component={Fields.AntAsyncSelect}
+                        url="categories"
+                        name={`file[${index}].analys_id`}
+                        placeholder={t("Analiz turini tanlang")}
+                        isClearable
+                        className="mb-[10px] w-[250px] mr-[20px]"
+                        optionLabel="name"
+                        optionValue="_id"
+                        isSearchable
+                        loadOptionsParams={(search: any) => ({
+                          extra: { name: search },
+                        })}
+                      />
+                      <Field
+                        component={Fields.FileUpload}
+                        setFieldValue={setFieldValue}
+                        name={`file[${index}].file`}
+                        className="w-[100px]"
+                      />
+                    </div>
+                    <div className="flex items-center">
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeMultiBox(item.uid)}
+                          className="w-[30px] h-[30px] text-red-500"
+                        >
+                          <MinusCircleOutlined />
+                        </button>
+                      )}
+                      {index === values.file.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={addMultiBox}
+                          className="w-[30px] h-[30px] text-blue-500"
+                        >
+                          <PlusCircleOutlined />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </FieldArray>
         </div>
         <div className="flex justify-end mt-[20px]">
           <Button
@@ -99,7 +98,7 @@ const Form = ({ setFieldValue, values }: any) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;
